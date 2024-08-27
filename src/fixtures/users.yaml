@@ -15,3 +15,20 @@
   name: user2
   created_at: "2023-11-12T12:34:56.789Z"
   updated_at: "2023-11-12T12:34:56.789Z"
+- id: 3
+  pid: 33333333-3333-3333-3333-333333333333
+  email: edvinas1@gmail.com
+  password: $argon2id$v=19$m=19456,t=2,p=1$z/LrhI7XAWG+mPiJNzrSMQ$4HxywWcrKx6bl/fYkhxHlLwenHm2MVxcmkIke9nfq7k
+  api_key: lo-256fef1d-308f-4dd2-a07c-a57e22194997
+  name: Edvinas
+  created_at: "2023-11-12T12:34:56.789Z"
+  updated_at: "2023-11-12T12:34:56.789Z"
+- id: 4
+  pid: 44444444-4444-4444-4444-444444444444
+  email: edvinas2@gmail.com
+  password: $argon2id$v=19$m=19456,t=2,p=1$z/LrhI7XAWG+mPiJNzrSMQ$4HxywWcrKx6bl/fYkhxHlLwenHm2MVxcmkIke9nfq7k
+  api_key: lo-256fef1d-308f-4dd2-a07c-a57e22194996
+  name: Edvinas
+  created_at: "2023-11-12T12:34:56.789Z"
+  updated_at: "2023-11-12T12:34:56.789Z"
+  

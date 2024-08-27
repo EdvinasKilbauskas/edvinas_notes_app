@@ -142,4 +142,3 @@ auth:
     secret: GEI7j6OIdRDkLbvZMYmw
     # Token expiration time in seconds
     expiration: 604800 # 7 days
-

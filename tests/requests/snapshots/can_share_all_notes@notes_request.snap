@@ -1,0 +1,8 @@
+---
+source: tests/requests/notes.rs
+expression: "(share_all_notes_request.status_code(), share_all_notes_request.text())"
+---
+(
+    200,
+    "{\"message\":\"All notes have been shared successfully\"}",
+)

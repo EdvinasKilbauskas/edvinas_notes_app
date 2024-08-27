@@ -1,52 +1,28 @@
-# Welcome to Loco :train:
+# Note Sharing App
 
-Loco is a web and API framework running on Rust.
+This app extends the Loco.rs REST API starter to add note sharing features.
 
-This is the **Rest API starter** which includes a `User` model and authentication based on JWT.
+## New Endpoints
 
-## Quick Start
+1. Share a note: POST /api/notes/:id/share
+   - Share a specific note with another user
 
-You need:
+2. Get shared notes: GET /api/notes/shared
+   - Get all notes shared with you
 
-- A local postgres instance
-- A local Redis instance
+3. Share all notes: POST /api/notes/share-all
+   - Share all your notes with another user
 
-Check out your development [configuration](config/development.yaml).
+## Updated Endpoints
 
-> To configure a database , please run a local postgres database with <code>loco:loco</code> and a db named <code>[app name]_development.</code>:
-> <code>docker run -d -p 5432:5432 -e POSTGRES_USER=loco -e POSTGRES_DB=[app name]_development -e POSTGRES_PASSWORD="loco" postgres:15.3-alpine</code>
+- GET /api/notes: Now returns your notes and notes shared with you
+- GET /api/notes/:id: Access a note if you own it or it's shared with you
+- POST/PUT /api/notes/:id: Update a note (owner only)
+- DELETE /api/notes/:id: Delete a note (owner only)
 
-Now start your app:
+## Testing
 
+Run tests with:
 ```
-$ cargo loco start
-Finished dev [unoptimized + debuginfo] target(s) in 21.63s
-    Running `target/debug/myapp start`
-
-    :
-    :
-    :
-
-controller/app_routes.rs:203: [Middleware] Adding log trace id
-
-                      ▄     ▀
-                                 ▀  ▄
-                  ▄       ▀     ▄  ▄ ▄▀
-                                    ▄ ▀▄▄
-                        ▄     ▀    ▀  ▀▄▀█▄
-                                          ▀█▄
-▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄ ▄▄▄▄▄▄▄▄▄ ▀▀█
- ██████  █████   ███ █████   ███ █████   ███ ▀█
- ██████  █████   ███ █████   ▀▀▀ █████   ███ ▄█▄
- ██████  █████   ███ █████       █████   ███ ████▄
- ██████  █████   ███ █████   ▄▄▄ █████   ███ █████
- ██████  █████   ███  ████   ███ █████   ███ ████▀
-   ▀▀▀██▄ ▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀ ██▀
-       ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-
-started on port 5150
+cargo test
 ```
-
-## Getting help
-
-Check out [a quick tour](https://loco.rs/docs/getting-started/tour/) or [the complete guide](https://loco.rs/docs/getting-started/guide/).

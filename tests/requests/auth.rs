@@ -1,6 +1,6 @@
-use insta::{assert_debug_snapshot, with_settings};
+use insta::{ assert_debug_snapshot, with_settings };
 use loco_rs::testing;
-use edvinas_notes_app::{app::App, models::users};
+use edvinas_notes_app::{ app::App, models::users };
 use rstest::rstest;
 use serial_test::serial;
 
@@ -24,7 +24,8 @@ async fn can_register() {
 
     testing::request::<App, _, _>(|request, ctx| async move {
         let email = "test@loco.com";
-        let payload = serde_json::json!({
+        let payload =
+            serde_json::json!({
             "name": "loco",
             "email": email,
             "password": "12341234"
@@ -44,8 +45,7 @@ async fn can_register() {
         }, {
             assert_debug_snapshot!(ctx.mailer.unwrap().deliveries());
         });
-    })
-    .await;
+    }).await;
 }
 
 #[rstest]
@@ -58,20 +58,19 @@ async fn can_login_with_verify(#[case] test_name: &str, #[case] password: &str) 
 
     testing::request::<App, _, _>(|request, ctx| async move {
         let email = "test@loco.com";
-        let register_payload = serde_json::json!({
+        let register_payload =
+            serde_json::json!({
             "name": "loco",
             "email": email,
             "password": "12341234"
         });
 
         //Creating a new user
-        _ = request
-            .post("/api/auth/register")
-            .json(&register_payload)
-            .await;
+        _ = request.post("/api/auth/register").json(&register_payload).await;
 
         let user = users::Model::find_by_email(&ctx.db, email).await.unwrap();
-        let verify_payload = serde_json::json!({
+        let verify_payload =
+            serde_json::json!({
             "token": user.email_verification_token,
         });
         request.post("/api/auth/verify").json(&verify_payload).await;
@@ -79,26 +78,24 @@ async fn can_login_with_verify(#[case] test_name: &str, #[case] password: &str) 
         //verify user request
         let response = request
             .post("/api/auth/login")
-            .json(&serde_json::json!({
+            .json(
+                &serde_json::json!({
                 "email": email,
                 "password": password
-            }))
-            .await;
+            })
+            ).await;
 
         // Make sure email_verified_at is set
-        assert!(users::Model::find_by_email(&ctx.db, email)
-            .await
-            .unwrap()
-            .email_verified_at
-            .is_some());
+        assert!(
+            users::Model::find_by_email(&ctx.db, email).await.unwrap().email_verified_at.is_some()
+        );
 
         with_settings!({
             filters => testing::cleanup_user_model()
         }, {
             assert_debug_snapshot!(test_name, (response.status_code(), response.text()));
         });
-    })
-    .await;
+    }).await;
 }
 
 #[tokio::test]
@@ -109,34 +106,32 @@ async fn can_login_without_verify() {
     testing::request::<App, _, _>(|request, _ctx| async move {
         let email = "test@loco.com";
         let password = "12341234";
-        let register_payload = serde_json::json!({
+        let register_payload =
+            serde_json::json!({
             "name": "loco",
             "email": email,
             "password": password
         });
 
         //Creating a new user
-        _ = request
-            .post("/api/auth/register")
-            .json(&register_payload)
-            .await;
+        _ = request.post("/api/auth/register").json(&register_payload).await;
 
         //verify user request
         let response = request
             .post("/api/auth/login")
-            .json(&serde_json::json!({
+            .json(
+                &serde_json::json!({
                 "email": email,
                 "password": password
-            }))
-            .await;
+            })
+            ).await;
 
         with_settings!({
             filters => testing::cleanup_user_model()
         }, {
             assert_debug_snapshot!((response.status_code(), response.text()));
         });
-    })
-    .await;
+    }).await;
 }
 
 #[tokio::test]
@@ -147,28 +142,26 @@ async fn can_reset_password() {
     testing::request::<App, _, _>(|request, ctx| async move {
         let login_data = prepare_data::init_user_login(&request, &ctx).await;
 
-        let forgot_payload = serde_json::json!({
+        let forgot_payload =
+            serde_json::json!({
             "email": login_data.user.email,
         });
         _ = request.post("/api/auth/forgot").json(&forgot_payload).await;
 
-        let user = users::Model::find_by_email(&ctx.db, &login_data.user.email)
-            .await
-            .unwrap();
+        let user = users::Model::find_by_email(&ctx.db, &login_data.user.email).await.unwrap();
         assert!(user.reset_token.is_some());
         assert!(user.reset_sent_at.is_some());
 
         let new_password = "new-password";
-        let reset_payload = serde_json::json!({
+        let reset_payload =
+            serde_json::json!({
             "token": user.reset_token,
             "password": new_password,
         });
 
         let reset_response = request.post("/api/auth/reset").json(&reset_payload).await;
 
-        let user = users::Model::find_by_email(&ctx.db, &user.email)
-            .await
-            .unwrap();
+        let user = users::Model::find_by_email(&ctx.db, &user.email).await.unwrap();
 
         assert!(user.reset_token.is_none());
         assert!(user.reset_sent_at.is_none());
@@ -177,11 +170,12 @@ async fn can_reset_password() {
 
         let response = request
             .post("/api/auth/login")
-            .json(&serde_json::json!({
+            .json(
+                &serde_json::json!({
                 "email": user.email,
                 "password": new_password
-            }))
-            .await;
+            })
+            ).await;
 
         assert_eq!(response.status_code(), 200);
 
@@ -190,6 +184,5 @@ async fn can_reset_password() {
         }, {
             assert_debug_snapshot!(ctx.mailer.unwrap().deliveries());
         });
-    })
-    .await;
+    }).await;
 }

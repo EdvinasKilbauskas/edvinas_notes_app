@@ -2,13 +2,13 @@ use std::path::Path;
 
 use async_trait::async_trait;
 use loco_rs::{
-    app::{AppContext, Hooks},
-    boot::{create_app, BootResult, StartMode},
+    app::{ AppContext, Hooks },
+    boot::{ create_app, BootResult, StartMode },
     controller::AppRoutes,
-    db::{self, truncate_table},
+    db::{ self, truncate_table },
     environment::Environment,
     task::Tasks,
-    worker::{AppWorker, Processor},
+    worker::{ AppWorker, Processor },
     Result,
 };
 use migration::Migrator;
@@ -16,7 +16,7 @@ use sea_orm::DatabaseConnection;
 
 use crate::{
     controllers,
-    models::_entities::{notes, users},
+    models::_entities::{ note_shares, notes, users },
     tasks,
     workers::downloader::DownloadWorker,
 };
@@ -32,9 +32,7 @@ impl Hooks for App {
         format!(
             "{} ({})",
             env!("CARGO_PKG_VERSION"),
-            option_env!("BUILD_SHA")
-                .or(option_env!("GITHUB_SHA"))
-                .unwrap_or("dev")
+            option_env!("BUILD_SHA").or(option_env!("GITHUB_SHA")).unwrap_or("dev")
         )
     }
 
@@ -67,6 +65,10 @@ impl Hooks for App {
     async fn seed(db: &DatabaseConnection, base: &Path) -> Result<()> {
         db::seed::<users::ActiveModel>(db, &base.join("users.yaml").display().to_string()).await?;
         db::seed::<notes::ActiveModel>(db, &base.join("notes.yaml").display().to_string()).await?;
+        db::seed::<note_shares::ActiveModel>(
+            db,
+            &base.join("note_shares.yaml").display().to_string()
+        ).await?;
         Ok(())
     }
 }

@@ -1,4 +1,4 @@
-use insta::{assert_debug_snapshot, with_settings};
+use insta::{ assert_debug_snapshot, with_settings };
 use loco_rs::testing;
 use edvinas_notes_app::app::App;
 use serial_test::serial;
@@ -25,16 +25,12 @@ async fn can_get_current_user() {
         let user = prepare_data::init_user_login(&request, &ctx).await;
 
         let (auth_key, auth_value) = prepare_data::auth_header(&user.token);
-        let response = request
-            .get("/api/user/current")
-            .add_header(auth_key, auth_value)
-            .await;
+        let response = request.get("/api/user/current").add_header(auth_key, auth_value).await;
 
         with_settings!({
             filters => testing::cleanup_user_model()
         }, {
             assert_debug_snapshot!((response.status_code(), response.text()));
         });
-    })
-    .await;
+    }).await;
 }
