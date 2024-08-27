@@ -20,6 +20,11 @@ This app extends the Loco.rs REST API starter to add note sharing features.
 - POST/PUT /api/notes/:id: Update a note (owner only)
 - DELETE /api/notes/:id: Delete a note (owner only)
 
+## Auth
+
+Use a JWT token in the Authorization header for all requests:
+Authorization: Bearer your_token_here
+
 ## Testing
 
 Run tests with:
